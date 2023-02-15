@@ -96,7 +96,12 @@ function setBg(bgNum) {
         timeDay = 'night'
     }
     let body = document.querySelector('.body')
-    body.style.backgroundImage = `url('https://raw.githubusercontent.com/alena636/stage1-tasks/assets/images/${timeDay}/${bgNum}.jpg')`
+    //плавная смена фото(загрузка фона после полной загрузки)
+    const img = new Image();
+    img.src = "./assets/img/bg.jpg"
+    img.onload = () => {
+        body.style.backgroundImage = `url('https://raw.githubusercontent.com/alena636/stage1-tasks/assets/images/${timeDay}/${bgNum}.jpg')`
+    }
 }
 setBg(randomNum)
 
