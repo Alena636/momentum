@@ -51,7 +51,7 @@ const name = document.querySelector('.name')
 //работа с local storage
 //перед перезагрузкой или закрытием страницы сохранить данные
 function setLocalStorage() {
-    //метод сохрю данные в локалсторадж(имя значения, значение)
+    //метод сохр. данные в локалсторадж(имя значения, значение)
     localStorage.setItem('name', name.value);
 }
 window.addEventListener('beforeunload', setLocalStorage)
@@ -130,3 +130,60 @@ function getSlidePrev() {
 }
 const slidePrev = document.querySelector('.slide-prev')
 slidePrev.addEventListener('click', getSlidePrev)
+
+
+
+//4.виджет погоды
+const weatherIcon = document.querySelector('.weather-icon');
+const temperature = document.querySelector('.temperature');
+const weatherDescription = document.querySelector('.weather-description');
+const windSpeed = document.querySelector('.wind')
+const humidity = document.querySelector('.humidity')
+
+
+const city = document.querySelector('.city');
+//сохраняем название города и погоду в локал сторадж
+window.addEventListener('beforeunload', () => {
+    localStorage.setItem('city', city.value)
+})
+
+if(localStorage.getItem('city')) {
+    city.value = localStorage.getItem('city')
+} else {
+    city.value = 'Minsk'
+}
+const weatherError = document.querySelector('.weather-error')
+//асинхронной функцией получаем объект с погодой и выводим в консоль айди иконки погоды, описание погоды, температуру, скорость ветра и влажность
+async function getWeather() {  
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city.value}&lang=en&appid=81ac2d435f0bbdb11ee0e1e4da9feddd&units=metric`;
+    const res = await fetch(url);
+    const data = await res.json();
+// вывести сообщения об ошибке
+    if(city.value.length == 0){
+        weatherIcon.className = 'weather-icon owf';
+        temperature.textContent = ''
+        weatherDescription.textContent = ''
+        windSpeed.textContent = ''
+        humidity.textContent = ''
+        weatherError.textContent = 'Error! Nothing to geocode fo "!'
+    } else if (res.status === 404) {
+        weatherIcon.className = 'weather-icon owf';
+        temperature.textContent = ''
+        weatherDescription.textContent = ''
+        windSpeed.textContent = ''
+        humidity.textContent = ''
+        weatherError.textContent = `Error! City not found for '${city.value}'!`
+    } 
+        weatherIcon.className = 'weather-icon owf';
+    weatherIcon.classList.add(`owf-${data.weather[0].id}`);
+    temperature.textContent = `${Math.floor(data.main.temp)}°C`;
+    weatherDescription.textContent = data.weather[0].description;
+    windSpeed.textContent = `Wind speed: ${Math.floor(data.wind.speed)} m/s`
+    humidity.textContent = `Humidity: ${data.main.humidity}%`
+    weatherError.textContent = ''
+}
+getWeather()
+city.addEventListener('change', getWeather)
+
+
+
