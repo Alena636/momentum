@@ -186,4 +186,29 @@ getWeather()
 city.addEventListener('change', getWeather)
 
 
+//5. цитаты дня
+//создали  json-файл с цитатами
+const quote = document.querySelector('.quote')
+const author = document.querySelector('.author')
 
+const changeQuote = document.querySelector('.change-quote')
+
+async function getQuotes() {  
+    const quotes = './data.json'
+    const res = await fetch(quotes);
+    const data = await res.json();
+    
+ //получаем рандомную цитату из списка
+    const quoteNum = Math.floor(Math.random() * data.length);
+    quote.textContent = data[quoteNum].text;
+    author.textContent = data[quoteNum].author;
+  
+  //клик на кнопку, которая меняет цитаты
+    changeQuote.addEventListener('click', function () {
+        const quoteNum = Math.floor(Math.random() * data.length);
+        quote.textContent = data[quoteNum].text;
+        author.textContent = data[quoteNum].author;
+    });
+    
+  }
+ getQuotes()
