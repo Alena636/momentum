@@ -65,7 +65,7 @@
   font-weight: 900;
 }
 
-.item-active::before {
+.item-active {
   color: #C5B358;
 }
 

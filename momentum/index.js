@@ -1,3 +1,5 @@
+import playList from './playList.js';
+
 //1.получаем текущее время
 const time = document.querySelector('.time')
 function showTime() {
@@ -194,7 +196,7 @@ const author = document.querySelector('.author')
 const changeQuote = document.querySelector('.change-quote')
 
 async function getQuotes() {  
-    const quotes = './data.json'
+    const quotes = 'data.json'
     const res = await fetch(quotes);
     const data = await res.json();
     
@@ -209,6 +211,76 @@ async function getQuotes() {
         quote.textContent = data[quoteNum].text;
         author.textContent = data[quoteNum].author;
     });
-    
   }
  getQuotes()
+
+ //6.проигрыватель
+ const play = document.querySelector('.play.player-icon')
+ const playPrev = document.querySelector('.play-prev')
+ const playNext = document.querySelector('.play-next')
+ let isPlay = false;
+ const audio = new Audio();
+ let playNum = 0;
+ const playListContainer = document.querySelector('.play-list')
+
+//пользователь может сам добавлять песни
+//создаем список через джс
+ playList.forEach( el => {
+    const li = document.createElement('li');
+    li.classList.add('play-item');
+    li.textContent = el.title;
+    playListContainer.append(li);
+})
+
+const playItems = document.querySelectorAll('.play-item')
+ function playAudio() {
+    audio.src = playList[playNum].src;
+    audio.currentTime = playNum;
+    playItems[playNum].classList.add('item-active');
+    if(!isPlay){
+        audio.play()
+        isPlay = true
+    } else {
+        audio.pause()
+        isPlay = false
+    }
+ }
+play.addEventListener('click', playAudio)
+//добавляем изменение кнопки на паузу
+function toggleBtn() {
+    if (isPlay) {
+        play.classList.add('pause');
+    } else {
+        play.classList.remove('pause');
+    }
+}
+play.addEventListener('click', toggleBtn);
+ 
+//клик по кнопке для перехода на следующую песню
+function toPlayNext() {
+    playItems[playNum].classList.remove('item-active');
+    if (playNum === playList.length - 1) {
+        playNum = -1;
+    }
+    playNum++;
+    isPlay = false;
+    playAudio();
+    toggleBtn();
+    return playNum;
+    
+}
+playNext.addEventListener('click', toPlayNext);
+
+//клик по кнопке для перехода назад
+function toPlayPrev() {
+    playItems[playNum].classList.remove('item-active');
+    if (playNum === 0) {
+        playNum = playList.length;
+    }
+    playNum--;
+    isPlay = false;
+    playAudio();
+    toggleBtn();
+    return playNum;
+}
+playPrev.addEventListener('click', toPlayPrev);
