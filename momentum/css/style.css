@@ -264,6 +264,21 @@
   min-height: 20px;
 }
 
+.contact-list {
+  padding-top: 16px;
+  display: flex;
+  gap: 240px;
+}
+
+.contact-link {
+  text-decoration: none;
+  color: #fff;
+}
+
+.contact-item {
+  list-style: none;
+}
+
 @media (max-width: 768px) {
   .time {
     min-height: 80px;
